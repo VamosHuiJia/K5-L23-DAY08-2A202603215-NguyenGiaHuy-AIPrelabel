@@ -2,13 +2,28 @@
   <img src="docs/assets/hero.png" alt="Day 08 Lab: AI hỗ trợ gán nhãn" width="100%">
 </p>
 
-# Day 08 Lab — AI hỗ trợ gán nhãn: Pre-label, Review, Calibration
+# Day 08 Lab — 2A202603215 - Nguyễn Gia Huy
+
+Bài cá nhân — **L2A**. Báo cáo và kết quả: [STUDENT.md](STUDENT.md), [submission/REPORT.md](submission/REPORT.md).
+
+| Nội dung | Kết quả |
+|---|---|
+| Gold gán tay | 4 ảnh, 51 annotation gồm 49 đối tượng và 2 vùng ignore |
+| Batch sau review | 24 ảnh, 438 annotation gồm 431 đối tượng và 7 vùng ignore |
+| Thử model | YOLO26, YOLOE và SAM 2.1; 3 ảnh mask click cho 3 vật khó |
+| Bẫy | Vòng đầu 9/12 = 75,0%; sau sửa lại 11/12 = 91,7% |
+| Thời gian | Gold 30 phút/4 ảnh; review 107 phút/24 ảnh, gồm 9 phút sửa lại |
+| QC | 8 ảnh, 145 đối tượng; 7/8 ảnh có lỗi; còn 1 guideline gap |
+| Quyết định | **Hold** — cần chốt phạm vi xe đẩy bán hàng và sửa các lỗi đã ghi trong phiếu QC |
+
+Phần hướng dẫn của repo được giữ bên dưới để tiện đối chiếu quy trình.
 
 <p align="center">
   <img alt="cá nhân" src="https://img.shields.io/badge/lab-cá%20nhân-0b1f3a">
   <img alt="thời lượng" src="https://img.shields.io/badge/thời%20lượng-4%20giờ-ff8a3d">
   <img alt="ảnh" src="https://img.shields.io/badge/dữ%20liệu-36%20ảnh-12b3a8">
-  <img alt="python" src="https://img.shields.io/badge/python-3.10–3.13-3776ab">
+  <img alt="python" src="https://img.shields.io/badge/python-3.10–3.13-3776ab">
+
   <img alt="gpu" src="https://img.shields.io/badge/GPU-không%20bắt%20buộc-2fbf71">
   <a href="https://colab.research.google.com/github/VinUni-AI20k/K5-L23-Day08-AI-Assisted-Labeling/blob/main/notebooks/day08_colab.ipynb"><img alt="Mở trong Colab" src="https://colab.research.google.com/assets/colab-badge.svg"></a>
 </p>
@@ -66,7 +81,7 @@ flowchart LR
 4. Trên lớp làm theo **[GUIDE.md](GUIDE.md)** từ **Part 1** (gán tay 4 ảnh gold, *chưa* chạy model nào lên ảnh gold!).
 5. Chạy `python scripts/check_submission.py` trước khi nộp.
 
-> **Khi nộp:** đổi dòng tiêu đề này thành `# Day 08 Lab — <MSHV> - <Họ và tên>`. Xem [SUBMISSION.md](SUBMISSION.md).
+> Yêu cầu và cấu trúc bài nộp: [SUBMISSION.md](SUBMISSION.md).
 
 ## CVAT: hai cách dùng AI
 
