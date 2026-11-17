@@ -1,2 +1,3 @@
 step,images,minutes,note
-gold_manual,4,30,"Gán tay 4 ảnh gold: ảnh 1: 7 phút; ảnh 2: 5 phút; ảnh 3: 6 phút; ảnh 4: 12 phút"
+gold_manual,4,30,Gán tay 4 ảnh gold: ảnh 1: 7 phút; ảnh 2: 5 phút; ảnh 3: 6 phút; ảnh 4: 12 phút
+batch_review,24,107,"Review và sửa nhãn 24 ảnh batch: img_003: 5 phút; img_004: 4 phút; img_005: 10 phút; img_006: 5 phút; img_008: 5 phút; img_009: 3 phút; img_010: 5 phút; img_013: 5 phút; img_014: 5 phút; img_017: 2 phút; img_018: 7 phút; img_021: 5 phút; img_022: 3 phút; img_023: 2 phút; img_024: 10 phút; img_025: 2 phút; img_026: 2 phút; img_027: 2 phút; img_028: 6 phút; img_029: 4 phút; img_031: 1 phút; img_033: 1 phút; img_034: 1 phút; img_035: 3 phút; Tổng 107 phút: vòng đầu 98 phút, review lại 9 phút. Bắt bẫy vòng đầu 9/12; sau khi xem kết quả và sửa lại 11/12."
