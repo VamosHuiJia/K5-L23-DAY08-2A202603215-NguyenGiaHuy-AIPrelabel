@@ -5,7 +5,7 @@
 - Lớp: L2A
 - Tài khoản GitHub: VamosHuiJia
 - Repo bài nộp: https://github.com/VamosHuiJia/K5-L23-DAY08-2A202603215-NguyenGiaHuy-AIPrelabel
-- Commit chốt bài (hash): [commit cuối cùng trên nhánh main](https://github.com/VamosHuiJia/K5-L23-DAY08-2A202603215-NguyenGiaHuy-AIPrelabel/commits/main/). Trong bản clone, xem hash đầy đủ bằng `git rev-parse HEAD`.
+- Commit chốt bộ kết quả (hash): [e492258662d39083c258844a21551ec274fbae9c](https://github.com/VamosHuiJia/K5-L23-DAY08-2A202603215-NguyenGiaHuy-AIPrelabel/commit/e492258662d39083c258844a21551ec274fbae9c). Đây là bản nhãn, số liệu và báo cáo đã chốt trước phần bổ sung thông tin bàn giao.
 - Máy: Windows; NVIDIA RTX 4050 Laptop khoảng 6 GB VRAM; các lượt model chạy CPU với PyTorch 2.15.0+cpu.
 - CVAT (Docker): 2.74.1
 

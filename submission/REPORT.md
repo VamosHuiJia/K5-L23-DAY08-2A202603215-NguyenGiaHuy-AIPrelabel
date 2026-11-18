@@ -4,7 +4,7 @@ Bài làm gồm 4 ảnh gold gán tay, 24 ảnh batch được review trên CVAT
 
 ## 1. Model và recipe (Part 2–3)
 
-Tôi thử YOLO26 ở hai ngưỡng 0,25 và 0,5, dùng YOLOE tìm xe ba bánh, sau đó dùng box YOLO26 làm prompt cho SAM 2.1. Bốn lượt khảo sát tương ứng `r01`–`r04` trong `model_log.csv`.
+Em thử YOLO26 ở hai ngưỡng 0,25 và 0,5, dùng YOLOE tìm xe ba bánh, sau đó dùng box YOLO26 làm prompt cho SAM 2.1. Bốn lượt khảo sát tương ứng `r01`–`r04` trong `model_log.csv`.
 
 | Lượt | Model và cấu hình | Tập ảnh | Kết quả | Thời gian chạy trung bình |
 |---|---|---|---|---|
@@ -13,9 +13,9 @@ Tôi thử YOLO26 ở hai ngưỡng 0,25 và 0,5, dùng YOLOE tìm xe ba bánh, 
 | r03 | YOLOE-26s, conf 0,25; chỉ tìm three_wheeler | 8 ảnh pilot | 8 box | 0,46 giây/ảnh |
 | r04 | YOLO26m, conf 0,3 → SAM 2.1 (`sam2.1_b.pt`) | img_004, img_013 | 16 box, cả 16 có mask | 8,03 giây/ảnh |
 
-Khi tăng ngưỡng YOLO26 từ 0,25 lên 0,5, tổng box giảm 76/215 = 35,3%. Một số box thừa được loại, như box bicycle conf 0,25 ở `img_015`, nhưng box motorbike conf 0,47 của xe máy tiền cảnh ở `img_030` cũng bị mất. Vì vậy tôi không chọn một ngưỡng chung chỉ dựa trên việc ảnh trông ít box hơn.
+Khi tăng ngưỡng YOLO26 từ 0,25 lên 0,5, tổng box giảm 76/215 = 35,3%. Một số box thừa được loại, như box bicycle conf 0,25 ở `img_015`, nhưng box motorbike conf 0,47 của xe máy tiền cảnh ở `img_030` cũng bị mất. Vì vậy em không chọn một ngưỡng chung chỉ dựa trên việc ảnh trông ít box hơn.
 
-Sau khảo sát, tôi chạy hai model trên toàn bộ 36 ảnh ở conf 0,05 để lấy ứng viên cho bước quét ngưỡng: YOLO26 tạo 1.669 box (0,82 giây/ảnh), YOLOE tạo 125 box three_wheeler (0,48 giây/ảnh), tương ứng `r05` và `r06`. Các lượt này dùng `--no-viz`; nhận xét thị giác của tour model dựa trên các ảnh đã lưu ở `r01`–`r04`.
+Sau khảo sát, em chạy hai model trên toàn bộ 36 ảnh ở conf 0,05 để lấy ứng viên cho bước quét ngưỡng: YOLO26 tạo 1.669 box (0,82 giây/ảnh), YOLOE tạo 125 box three_wheeler (0,48 giây/ảnh), tương ứng `r05` và `r06`. Các lượt này dùng `--no-viz`; nhận xét thị giác của tour model dựa trên các ảnh đã lưu ở `r01`–`r04`.
 
 Ngưỡng cuối lấy từ `qc/threshold_sweep.md`:
 
@@ -39,11 +39,11 @@ python scripts/merge_prelabels.py work/prelabel/yoloe_all/pre.coco.json work/pre
 
 Lệnh tạo 536 box trước khi chèn bẫy. File nhập vào CVAT chỉ chứa 24 ảnh batch; file đầy đủ còn có gold để đo máy.
 
-Tôi chọn **SAM 2.1, trọng số `sam2.1_b.pt`** vì đã chạy được trên CPU của máy và tạo được mask từ box hoặc click. Ở `img_004`, mask tách được phần lớn người và xe khỏi nền; ở `img_013`, mask xe vẫn dính người lái. Đây là phiên bản chính cho cả tour model và ba lượt click ở Part 5; chưa có phép so sánh trực tiếp với SAM 1 hoặc SAM 3.
+Em chọn **SAM 2.1, trọng số `sam2.1_b.pt`** vì đã chạy được trên CPU của máy và tạo được mask từ box hoặc click. Ở `img_004`, mask tách được phần lớn người và xe khỏi nền; ở `img_013`, mask xe vẫn dính người lái. Đây là phiên bản chính cho cả tour model và ba lượt click ở Part 5; chưa có phép so sánh trực tiếp với SAM 1 hoặc SAM 3.
 
 Đổi ngưỡng không giải quyết được việc tuk-tuk bị YOLO26 gọi thành car/truck. Ví dụ ở `img_011`, tuk-tuk vẫn mang nhãn truck với conf 0,77 ở cả hai ngưỡng; cần sửa lớp theo guideline hoặc dùng YOLOE bổ sung ứng viên. Cũng tại ảnh này, YOLOE tìm được xe ba bánh với conf khoảng 0,28, cho thấy điểm thấp chưa chắc sai và điểm cao chưa chắc đúng.
 
-Giới hạn quan trọng là tôi chọn ngưỡng và đánh giá máy trên cùng 4 ảnh gold. Các số precision/recall vì vậy có thể lạc quan, đặc biệt với lớp ít mẫu. Tình trạng tham khảo minh họa trước khi chốt gold được ghi ở mục 8.
+Giới hạn quan trọng là em chọn ngưỡng và đánh giá máy trên cùng 4 ảnh gold. Các số precision/recall vì vậy có thể lạc quan, đặc biệt với lớp ít mẫu. Tình trạng tham khảo minh họa trước khi chốt gold được ghi ở mục 8.
 
 ## 2. AI error profile (từ `qc/review_stats.md`)
 
@@ -88,7 +88,7 @@ Vòng đầu bắt được **9/12 = 75,0%**, chưa đạt ngưỡng 80%:
 
 Ba bẫy lọt ban đầu là `img_004` (extra), `img_025` (missing) và `img_028` (wrong_class). Sau 9 phút sửa lại và export, kết quả tăng thành **11/12 = 91,7%**; bẫy sai lớp ở `img_028` vẫn còn lọt theo script. Khoảng tin cậy 95% của kết quả sau sửa được in là khoảng 65–99%.
 
-Kết quả vòng đầu cho thấy bước kiểm box thừa, vật thiếu và sai lớp chưa đủ hiệu quả. Không có log chi tiết từng thao tác để khẳng định tôi đã bỏ bước nào ở từng ảnh; các bẫy lọt là bằng chứng để siết lại đúng ba bước này. Box trông hợp lý hoặc có conf cao vẫn có thể sai.
+Kết quả vòng đầu cho thấy bước kiểm box thừa, vật thiếu và sai lớp chưa đủ hiệu quả. Không có log chi tiết từng thao tác để khẳng định em đã bỏ bước nào ở từng ảnh; các bẫy lọt là bằng chứng để siết lại đúng ba bước này. Box trông hợp lý hoặc có conf cao vẫn có thể sai.
 
 Accepted vòng đầu là 350/451 = 77,6% nhưng bắt bẫy chỉ 75%. Do đó accepted cao không chứng minh review tốt: lỗi máy có thể vẫn được giữ nguyên, còn vật mà cả máy và người cùng bỏ sót thì không hiện trong số accepted. Kết quả 11/12 là sau khi đã biết phản hồi vòng đầu, không thay thế số 9/12 ban đầu và không được xem là một lần đo mù độc lập.
 
@@ -103,9 +103,9 @@ Thời gian từ `time_log.csv`:
 | Sửa lại sau thống kê bẫy | Cùng lô 24 ảnh | 9 phút bổ sung | Tính vào tổng review |
 | Review gồm cả sửa lại | 24 | 107 phút | 4,46 phút/ảnh |
 
-So với 7,50 phút/ảnh gán tay, 4,46 phút/ảnh review thấp hơn khoảng 40,6%. Đây chỉ là so sánh trên hai tập ảnh khác nhau: số đối tượng, độ khó và thao tác không giống nhau; sau khi gán gold tôi cũng đã quen kiểu cảnh. Tổng 107 phút không gồm thời gian cài đặt, tải model, inference hoặc làm mẫu QC, nên không coi 40,6% là mức tiết kiệm của toàn bộ quy trình.
+So với 7,50 phút/ảnh gán tay, 4,46 phút/ảnh review thấp hơn khoảng 40,6%. Đây chỉ là so sánh trên hai tập ảnh khác nhau: số đối tượng, độ khó và thao tác không giống nhau; sau khi gán gold em cũng đã quen kiểu cảnh. Tổng 107 phút không gồm thời gian cài đặt, tải model, inference hoặc làm mẫu QC, nên không coi 40,6% là mức tiết kiệm của toàn bộ quy trình.
 
-Tôi thấy pre-label có ích để tạo bộ box ban đầu, nhất là person và motorbike. Tuy nhiên, 18 added ở motorbike và nhiều box three_wheeler bị xóa cho thấy vẫn phải kiểm từng ảnh. Với xe ba bánh, YOLOE giúp mở rộng lớp nhưng cần kiểm sai lớp, box lỏng và xe bị che. Kết quả QC còn lỗi nên mức giảm thời gian chưa đủ để kết luận nhãn đã sẵn sàng sử dụng.
+Em thấy pre-label có ích để tạo bộ box ban đầu, nhất là person và motorbike. Tuy nhiên, 18 added ở motorbike và nhiều box three_wheeler bị xóa cho thấy vẫn phải kiểm từng ảnh. Với xe ba bánh, YOLOE giúp mở rộng lớp nhưng cần kiểm sai lớp, box lỏng và xe bị che. Kết quả QC còn lỗi nên mức giảm thời gian chưa đủ để kết luận nhãn đã sẵn sàng sử dụng.
 
 Ba quy tắc áp dụng cho lần review tiếp theo:
 
@@ -121,7 +121,7 @@ Ba quy tắc áp dụng cho lần review tiếp theo:
 | img_004 | SAM 2.1 (`sam2.1_b.pt`) | 3: 2 dương, 1 âm | Không dính hai người đứng cạnh xe. Chưa đánh giá riêng trường hợp chở hàng. | Mask tách được tuk-tuk xanh dương phía trước khỏi các xe phía sau, nhưng bỏ sót biển TAXI gắn trên mái. | [tuktuk_img004.jpg](masks/tuktuk_img004.jpg) |
 | img_032 | SAM 2.1 (`sam2.1_b.pt`) | 3: 2 dương, 1 âm | Không dính người đứng bên phải. Không có ca hàng hoá được kiểm riêng trong lượt này. | Mask chọn được ghế, khung phía trước và hai bánh lớn; một số khoảng trống trong khung cũng bị tô kín. Chưa đo diện tích từng lỗ nên chưa kết luận tất cả các khoảng này đều vi phạm ngưỡng khoảng 5%. | [cyclo_img032.jpg](masks/cyclo_img032.jpg) |
 
-- Tôi dùng cùng SAM 2.1 cho cả ba vật. Mỗi lượt có hai điểm dương trên xe và một điểm âm trên người đứng cạnh hoặc người lái. Các lệnh đã chạy:
+- em dùng cùng SAM 2.1 cho cả ba vật. Mỗi lượt có hai điểm dương trên xe và một điểm âm trên người đứng cạnh hoặc người lái. Các lệnh đã chạy:
 
   ```powershell
   python scripts/sam2_points.py --image img_013.jpg --pos "400,480" --pos "600,110" --neg "720,300" --sam sam2.1_b.pt --out submission/masks --name tuktuk_img013
@@ -131,16 +131,16 @@ Ba quy tắc áp dụng cho lần review tiếp theo:
 
 - Diện tích mask do script in ra lần lượt là 317.255/698.368 pixel ở `img_013` (45,4% ảnh), 92.185/698.368 pixel ở `img_004` (13,2%) và 50.773/589.824 pixel ở `img_032` (8,6%). Cả ba lượt đều trả về một polygon. Đây là diện tích và số polygon, không phải điểm chính xác của mask.
 - Mục 4.2 của guideline giúp kiểm phần nhìn thấy, bóng đổ, khoảng trống và vùng hai vật chạm nhau. Với `img_013`, phần người còn bị tô vào mask xe là lỗi phân đoạn; quy tắc tách người và xe đã có, không cần đổi định nghĩa lớp. Với `img_032`, cần kiểm từng khoảng trống theo ngưỡng xấp xỉ 5% đã quy định, không tự coi mọi lỗ đều phải khoét.
-- Tôi bổ sung cách phân biệt bề mặt kính với khoang xe hở trong `CAL-02`, vì giữ kính trong mask không có nghĩa là được tô cả người nhìn qua cạnh hở. `CAL-04` và `CAL-05` ghi lại các bước rà mask người/xe, bộ phận gắn cố định và lỗ trong khung.
+- Em bổ sung cách phân biệt bề mặt kính với khoang xe hở trong `CAL-02`, vì giữ kính trong mask không có nghĩa là được tô cả người nhìn qua cạnh hở. `CAL-04` và `CAL-05` ghi lại các bước rà mask người/xe, bộ phận gắn cố định và lỗ trong khung.
 - Ba ảnh trên là kết quả của các lượt click đã chạy, còn giữ lỗi để phân tích. Chưa có lượt sửa mask bổ sung hoặc kết quả đối chứng bằng Interactor SAM trong CVAT được đưa vào báo cáo này.
 
 ## 6. Calibration (Part 6)
 
 - Bảng `qc/calibration_decisions.csv` có 6 ca: 5 quyết định đã chốt từ Part 5–6 và 1 ca còn mở phát sinh khi QC (`CAL-06`). Có 3 ca `loi_may` và 3 ca `cau_hoi_mo`. Các ca đều dẫn ảnh đã quan sát, không lấy ví dụ giả định thay cho kết quả chạy.
-- `CAL-01`: YOLO26 gán tuk-tuk thành `car` ở `img_004` và `img_013`. Tôi giữ định nghĩa `three_wheeler` của v1.0, bổ sung các ảnh này vào phần nhắc lỗi. Đây là lỗi máy, không phải lý do để đổi taxonomy.
+- `CAL-01`: YOLO26 gán tuk-tuk thành `car` ở `img_004` và `img_013`. Em giữ định nghĩa `three_wheeler` của v1.0, bổ sung các ảnh này vào phần nhắc lỗi. Đây là lỗi máy, không phải lý do để đổi taxonomy.
 - `CAL-02`: chốt câu hỏi mở số 5 về kính xe. Giữ bề mặt kính gắn trên xe trong mask xe, kể cả khi nhìn xuyên qua kính. Khoang hở không có kính phải được phân biệt với bề mặt kính; người hoặc nền nhìn qua khoang hở không tự động thuộc mask xe.
 - `CAL-03`: chốt câu hỏi mở số 7 về điểm tin cậy. Không có mức `conf` nào cho phép bỏ qua kiểm tra ảnh. Ở `img_011`, YOLO26 gán sai tuk-tuk thành `truck` với conf 0,77, trong khi YOLOE tìm được xe này dưới lớp `three_wheeler` với conf khoảng 0,28. Điểm tin cậy chỉ dùng để ưu tiên kiểm tra; ngưỡng giữ pre-label vẫn theo kết quả Part 3.
-- `CAL-04`: mask xe còn dính người ở `img_013`, còn ở `img_004` thì bỏ biển TAXI gắn trên mái. Tôi giữ quy tắc tách người và xe, đồng thời bổ sung bước rà các bộ phận gắn cố định trước khi chấp nhận mask.
+- `CAL-04`: mask xe còn dính người ở `img_013`, còn ở `img_004` thì bỏ biển TAXI gắn trên mái. Em giữ quy tắc tách người và xe, đồng thời bổ sung bước rà các bộ phận gắn cố định trước khi chấp nhận mask.
 - `CAL-05`: dùng `img_032` làm ví dụ rà lỗ trong khung xích lô. Giữ ngưỡng xấp xỉ 5% của v1.0; chỉ yêu cầu loại các lỗ lớn, không tự đặt một ngưỡng mới. Do chưa đo từng lỗ, ca này ghi nhận việc cần kiểm tiếp chứ chưa coi toàn bộ mask là sai.
 - `CAL-06`: trong QC, các xe đẩy bán trái cây ở `img_008` chưa được xác nhận rõ cấu trúc ba bánh và phạm vi áp dụng lớp. Ca này còn mở, được tính là 1 guideline gap; chưa tự tính cả ba box là lỗi sai lớp.
 - Phần bổ sung nằm trong `guidelines/guideline_v1.1_calibrated.md`, có đối chiếu `case_id` và lịch sử thay đổi. Các câu hỏi 1, 2, 3, 4 và 6 của v1.0 chưa được chốt thêm trong lần calibration này; trạng thái và giới hạn được ghi riêng trong v1.1.
@@ -176,10 +176,11 @@ Việc cần làm tiếp:
 
 ## 8. Ghi chú cá nhân
 
-- Tôi gán 4 ảnh gold và review 24 ảnh batch trên CVAT Docker, export theo COCO 1.0. Các số đo được tính từ những file nhãn đã export; thời gian gán và review được ghi trong `time_log.csv`. Tôi đối chiếu file nhãn bằng `validate_labels.py`, xem ảnh box/mask và so các tỷ lệ với đầu ra trong `submission/qc/`.
-- Gold có một hạn chế cần ghi rõ: trước khi chốt `img_001`, tôi đã tham khảo minh họa cách đặt box người và xe. Nhãn vẫn được vẽ tay trên CVAT, nhưng ảnh này không còn hoàn toàn độc lập với phần minh họa đã xem. Vì vậy số đo trên gold cần được đọc cùng hạn chế này, ngoài việc chọn và chấm ngưỡng trên cùng 4 ảnh.
+- **Công cụ hỗ trợ và cách kiểm tra:** em dùng ChatGPT/Codex để giải thích quy trình lab, đọc thông báo lỗi, hướng dẫn lệnh chạy.
+- Em gán 4 ảnh gold và review 24 ảnh batch trên CVAT Docker, export theo COCO 1.0. Các số đo được tính từ những file nhãn đã export; thời gian gán và review được ghi trong `time_log.csv`. em đối chiếu file nhãn bằng `validate_labels.py`, xem ảnh box/mask và so các tỷ lệ với đầu ra trong `submission/qc/`.
+- **Gold bị nhiễm ở img_001:** trước khi chốt ảnh này, em đã hỏi ChatGPT/Codex cách gán người và xe trên ảnh, đồng thời xem ảnh minh họa box được tạo từ công cụ. Nhãn vẫn được vẽ tay trên CVAT, nhưng ảnh này không còn độc lập với gợi ý đã xem. Vì vậy không coi cả 4 ảnh gold là một tập đối chứng hoàn toàn sạch; số đo trên gold cần được đọc cùng hạn chế này và việc chọn, chấm ngưỡng trên cùng 4 ảnh. Chưa có tập gold thay thế để định lượng riêng mức ảnh hưởng.
 - Môi trường: Windows, Python 3.11.9, PyTorch 2.15.0+cpu, Ultralytics 8.4.215, CVAT Docker 2.74.1. Máy có RTX 4050 Laptop khoảng 6 GB VRAM nhưng các lượt trong nhật ký chạy bằng CPU vì PyTorch hiện tại là bản CPU. Không ghi các thời gian này như kết quả chạy CUDA.
 - Ban đầu thiếu OpenCV và Ultralytics, sau đó đã cài thư viện và tải `yolo26m.pt`, `yoloe-26s-seg.pt`, `sam2.1_b.pt`. YOLOE tự cài thêm CLIP ở lượt đầu; cảnh báo `torch.jit.load` không làm lượt chạy thất bại. Tên menu CVAT có thể khác hình trong tài liệu do khác phiên bản.
 - Không dùng `data/cache/` thay cho các lượt chạy trong bài. Kết quả được tạo từ các lệnh đã chạy và ghi trong `work/runs.csv`; các lớp ngoài taxonomy như umbrella, bottle, handbag được loại theo ánh xạ của đề.
 - Không sửa mã script để thay số đo hoặc đổi mục `rules` trong taxonomy. Bản nộp giữ kết quả Hold, các lỗi QC còn lại và giới hạn của ba mask; chưa có `qc_fixed.json` hoặc vòng QC sau sửa để khẳng định đã giải quyết hết.
-- Lần sau tôi sẽ dành riêng một lượt rà vật thiếu và sai lớp trước khi chỉnh biên, đồng thời ghi lại ca mơ hồ ngay khi gặp. Như vậy phần calibration có căn cứ rõ hơn và hạn chế phải quay lại sửa sau khi xem kết quả bẫy.
+- Lần sau em sẽ dành riêng một lượt rà vật thiếu và sai lớp trước khi chỉnh biên, đồng thời ghi lại ca mơ hồ ngay khi gặp. Như vậy phần calibration có căn cứ rõ hơn và hạn chế phải quay lại sửa sau khi xem kết quả bẫy.
